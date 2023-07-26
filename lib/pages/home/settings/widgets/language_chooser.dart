@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../../controllers/lang_controller.dart';
+import '../../../../lang/translation_service.dart';
+import '../../../../utils/utils.dart';
+
+class LanguageChooser extends StatefulWidget {
+  const LanguageChooser({Key? key}) : super(key: key);
+
+  @override
+  State<LanguageChooser> createState() => _LanguageChooserState();
+}
+
+class _LanguageChooserState extends State<LanguageChooser> {
+  final String title = 'language'.tr;
+  final LanguageController _languageController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                ),
+              ),
+              DropdownButton<String>(
+                iconSize: MediaQuery.of(context).size.width * 0.045,
+                isExpanded: false,
+                isDense: false,
+                alignment: Alignment.center,
+                value: _languageController.selectedLanguage.value,
+                onChanged: (symbol) {
+                  _languageController.changeLanguage = symbol!;
+                  Utils.logInfo('[SETTINGS] - App language changed to $symbol');
+                },
+                items: TranslationService.languages.map(
+                  (LanguageModel _language) {
+                    return DropdownMenuItem<String>(
+                      child: Text(
+                        _language.language,
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                      ),
+                      value: _language.symbol,
+                    );
+                  },
+                ).toList(),
+              ),
+            ],
+          ),
+        ),
+        const Divider(),
+      ],
+    );
+  }
+}
